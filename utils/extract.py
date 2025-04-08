@@ -1,15 +1,30 @@
-"""Scraping module for Fashion Studio Dicoding website using Scrapy"""
+"""
+Data extraction module for Fashion Studio Dicoding website using Scrapy.
+
+This module provides a Scrapy spider and utility functions to scrape product data
+from the Fashion Studio Dicoding website and convert it to a pandas DataFrame.
+"""
 
 import datetime
 import logging
-
 import pandas as pd
 import scrapy
 from scrapy.crawler import CrawlerProcess
 
 
 class FashionStudioDicodingSpider(scrapy.Spider):
-    """Scrapy spider for extracting product data from Fashion Studio Dicoding website"""
+    """
+    Scrapy spider for extracting product data from Fashion Studio Dicoding website.
+
+    This spider crawls through product pages and extracts information including:
+    - Product title
+    - Price
+    - Rating
+    - Available colors
+    - Available sizes
+    - Target gender
+    - Timestamp of data collection
+    """
 
     name = "fashion_studio_spider"
 
@@ -22,15 +37,37 @@ class FashionStudioDicodingSpider(scrapy.Spider):
     }
 
     def start_requests(self):
+        """
+        Initiate the crawling process by sending the first request.
+
+        Returns:
+            A scrapy.Request object for the target website
+
+        Raises:
+            Exception: If the initial request fails
+        """
         try:
             yield scrapy.Request(
                 url="https://fashion-studio.dicoding.dev/", callback=self.parse
             )
         except Exception as e:
-            self.logger.error(f"Error in start_requests: {str(e)}")
-            raise
+            self.logger.error("Error in start_requests: %s", str(e))
+            raise e from e
 
     def parse(self, response, **kwargs):
+        """
+        Parse the response and extract product information.
+
+        Args:
+            response: HTTP response from scrapy
+            **kwargs: Additional keyword arguments
+
+        Yields:
+            Dictionary containing product information
+
+        Raises:
+            Exception: If parsing fails
+        """
         try:
             timestamp = datetime.datetime.now()
             collection_cards = response.css("div.collection-card")
@@ -72,11 +109,20 @@ class FashionStudioDicodingSpider(scrapy.Spider):
                 yield response.follow(next_link, callback=self.parse)
         except Exception as e:
             self.logger.error("Error in parse function: %s", e)
-            raise
+            raise e from e
 
 
-def extract():
-    """Run Scrapy crawler and return collected data as DataFrame"""
+def extract() -> pd.DataFrame:
+    """
+    Run Scrapy crawler and return collected data as DataFrame.
+
+    This function executes the FashionStudioDicodingSpider to extract data
+    and then loads the results from the output file into a pandas DataFrame.
+
+    Returns:
+        pd.DataFrame: DataFrame containing the scraped product data.
+        Empty DataFrame if extraction or loading fails.
+    """
     try:
         process = CrawlerProcess()
         process.crawl(FashionStudioDicodingSpider)
@@ -86,7 +132,7 @@ def extract():
             data = pd.read_json("output.json")
             return data
         except FileNotFoundError:
-            logging.error("Output file not found, crawling mungkin gagal")
+            logging.error("Output file not found, crawling may have failed")
             return pd.DataFrame()
         except Exception as e:
             logging.error("Error loading data: %s", e)
