@@ -9,12 +9,22 @@ and loading to various storage destinations.
 import logging
 import sys
 from typing import Dict
+import os
+from datetime import datetime
 
 from utils import extract, load, transform
 
-# Configure logging
+# Create logs directory if it doesn't exist
+os.makedirs("logs", exist_ok=True)
+
+# Generate log filename with timestamp
+log_filename = f"logs/pipeline_{datetime.now().strftime('%Y%m%d_%H%M%S')}.log"
+
+# Configure logging to both console and file
 logging.basicConfig(
-    level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
+    level=logging.INFO,
+    format="%(asctime)s - %(levelname)s - %(message)s",
+    handlers=[logging.FileHandler(log_filename), logging.StreamHandler(sys.stdout)],
 )
 
 # Database configuration
