@@ -1,3 +1,6 @@
 pandas
 scrapy
 numpy
+google-auth~=2.36
+google-api-python-client~=2.152
+sqlalchemy
