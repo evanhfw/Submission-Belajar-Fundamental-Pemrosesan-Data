@@ -21,7 +21,7 @@ from sqlalchemy.exc import SQLAlchemyError
 SERVICE_ACCOUNT_FILE = "google-sheets-api.json"
 SCOPES = ["https://www.googleapis.com/auth/spreadsheets"]
 SPREADSHEET_ID = "1OSXrSugb5Rsc5vmesFjlQ0MXAf-2Fv5Trjm1yBV8LNk"
-RANGE_NAME = "Sheet1!A2:F9999"
+RANGE_NAME = "Sheet1!A2:G9999"
 
 
 def load_to_csv(cleaned_data: pd.DataFrame, csv_name: str = "products.csv") -> bool:
