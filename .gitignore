@@ -3,3 +3,4 @@ __pycache__
 experiment.ipynb
 output.json
 scrapped_data.csv
+google-sheets-api.json
