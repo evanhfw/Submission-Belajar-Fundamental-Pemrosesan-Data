@@ -1,6 +1,4 @@
 __pycache__
 .env
 experiment.ipynb
-output.json
-scrapped_data.csv
 google-sheets-api.json
